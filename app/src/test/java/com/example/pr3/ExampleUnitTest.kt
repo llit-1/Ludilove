@@ -1,4 +1,4 @@
-package com.shz.ludilove
+package com.example.pr3
 
 import org.junit.Test
 

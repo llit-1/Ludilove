@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ItemActivity"
+    android:orientation="vertical"
+    android:background="@color/gray"
+    >
+
+    <TextView
+        android:id="@+id/item_list_title_second"
+        android:layout_width="match_parent"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:text="TextView"
+        android:fontFamily="@font/cuprum_bold"
+        />
+
+    <ImageView
+        android:id="@+id/item_list_image"
+        android:contentDescription="Баба"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/item62"
+        />
+
+    <TextView
+        android:id="@+id/item_list_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:fontFamily="@font/cuprum_bold"
+        android:layout_marginBottom="300dp"
+        android:text="TextView"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/item_list_price"
+        android:layout_width="wrap_content"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="20dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/cuprum"
+        android:textSize="22sp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/orange"
+        android:background="@color/orange"
+        android:width="70dp"
+        android:height="70dp"
+        android:layout_gravity="end"
+        android:text="TextView" />
+
+    <Button
+        android:id="@+id/button_buy"
+        android:fontFamily="@font/cuprum"
+        android:textSize="18sp"
+        android:layout_width="200dp"
+        android:paddingVertical="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/orange"
+        android:text="Добавить в корзину" />
+
+</LinearLayout>
