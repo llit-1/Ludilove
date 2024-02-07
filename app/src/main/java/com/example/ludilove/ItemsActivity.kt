@@ -13,6 +13,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import android.util.Base64
+import androidx.recyclerview.widget.GridLayoutManager
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -40,7 +41,8 @@ class ItemsActivity : AppCompatActivity() {
                     for(product in products) {
                         items.add(Item(product.id.toInt(), product.imageUrl, product.name, product.description, product.description, product.price))
                     }
-                    itemsList.layoutManager = LinearLayoutManager(this)
+
+                    itemsList.layoutManager = GridLayoutManager(this, 2)
                     itemsList.adapter = ItemsAdapter(items, this)
                 },
                 { error ->

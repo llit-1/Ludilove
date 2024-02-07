@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/gray"
-    tools:context=".ItemsActivity">
+    tools:context=".ItemsActivity"
+    >
 
     <TextView
         android:id="@+id/link_to_auth"
@@ -24,6 +25,10 @@
         android:id="@+id/itemsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="2dp"
+
         />
 
 </LinearLayout>

@@ -8,10 +8,16 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 
+var test = 1;
 class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
+
+        if(test == 1) {
+            val intent = Intent(this, ItemsActivity::class.java)
+            startActivity(intent)
+        }
 
         val userLoginAuth : EditText = findViewById(R.id.user_login_auth)
         val userPassAuth: EditText = findViewById(R.id.user_pass_auth)

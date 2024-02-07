@@ -1,4 +1,4 @@
-package com.example.pr3
+package com.example.ludilove
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
