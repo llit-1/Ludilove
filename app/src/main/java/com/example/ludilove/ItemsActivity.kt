@@ -23,6 +23,9 @@ class ItemsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_items)
+
+        FullScreenHelper.enableFullScreen(window)
+
         val itemsList : RecyclerView = findViewById(R.id.itemsList)
         val items = arrayListOf<Item>()
 

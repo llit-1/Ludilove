@@ -13,6 +13,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        FullScreenHelper.enableFullScreen(window)
+
         val userLogin : EditText = findViewById(R.id.user_login)
         val userEmail : EditText = findViewById(R.id.user_email)
         val userPass: EditText = findViewById(R.id.user_pass)

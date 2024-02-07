@@ -14,6 +14,8 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
+        FullScreenHelper.enableFullScreen(window)
+
         if(test == 1) {
             val intent = Intent(this, ItemsActivity::class.java)
             startActivity(intent)

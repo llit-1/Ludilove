@@ -14,19 +14,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/orange"
+        android:gravity="center"
+        android:background="@drawable/rounded_background_for_logo"
         android:fontFamily="@font/cuprum"
         android:padding="10dp"
-        android:text="Меню"
+        android:text="ЛюдиЛюбят"
         android:textColor="@color/white"
-        android:textSize="32sp" />
+        android:textSize="26sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/itemsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="2dp"
-        android:layout_marginTop="1dp"
         android:layout_marginEnd="2dp"
 
         />
