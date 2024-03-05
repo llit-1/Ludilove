@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/inter_bold"
+        android:fontFamily="@font/akrobat_bold"
         android:textColor="@color/black"
         android:layout_gravity="center"
         android:layout_marginTop="170dp"
@@ -27,6 +27,7 @@
         android:inputType="text"
         android:hint="Введите логин"
         android:layout_marginTop="20dp"
+        android:fontFamily="@font/akrobat_regular"
         android:layout_gravity="center"
         android:textColor="@color/black"
         />
@@ -36,6 +37,7 @@
         android:layout_width="220dp"
         android:layout_height="50dp"
         android:inputType="textEmailAddress"
+        android:fontFamily="@font/akrobat_regular"
         android:hint="Введите email"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
@@ -48,6 +50,7 @@
         android:inputType="textPassword"
         android:hint="Введите пароль"
         android:layout_marginTop="20dp"
+        android:fontFamily="@font/akrobat_regular"
         android:layout_gravity="center"
         android:textColor="@color/black" />
 
@@ -57,6 +60,7 @@
         android:layout_height="60dp"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
+        android:fontFamily="@font/akrobat_bold"
         android:backgroundTint="@color/orange"
         android:text="Зарегистрироваться"
         android:textSize="16sp" />
@@ -67,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="120dp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/akrobat_bold"
         android:text="Уже зарегистрированы?"
         android:textColor="@color/black"
         android:textSize="17sp" />

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="170dp"
-        android:fontFamily="@font/inter_bold"
+        android:fontFamily="@font/akrobat_bold"
         android:text="Авторизация"
         android:textColor="@color/black"
         android:textSize="25sp" />
@@ -25,6 +25,7 @@
         android:layout_height="50dp"
         android:inputType="text"
         android:hint="Введите логин"
+        android:fontFamily="@font/akrobat_regular"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:textColor="@color/black"
@@ -36,15 +37,28 @@
         android:layout_height="50dp"
         android:inputType="textPassword"
         android:hint="Введите пароль"
+        android:fontFamily="@font/akrobat_regular"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:textColor="@color/black" />
+
+    <ProgressBar
+        android:id="@+id/bars"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button_auth"
         android:layout_gravity="center"
         android:layout_width="220dp"
         android:layout_height="60dp"
+        android:fontFamily="@font/akrobat_bold"
         android:text="Войти"
         android:layout_marginTop="50dp"
         android:textSize="16sp"
@@ -57,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="120dp"
-        android:fontFamily="@font/inter"
+        android:fontFamily="@font/akrobat_bold"
         android:text="Зарегистрироваться"
         android:textColor="@color/black"
         android:textSize="17sp" />

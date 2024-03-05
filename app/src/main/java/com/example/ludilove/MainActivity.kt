@@ -7,6 +7,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONObject
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,10 +34,44 @@ class MainActivity : AppCompatActivity() {
             if(login == "" || email == "" || pass == "") {
                 Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_LONG).show()
             } else {
-                val user = User(login, email, pass)
-
                 val db = DbHelper(this, null)
-                db.addUser(user)
+                val url = "https://appapi.ludilove.ru/api/auth"
+                val queue = Volley.newRequestQueue(this)
+
+                // Создайте объект JSON с данными, которые вы хотите отправить
+                val jsonObject = JSONObject().apply {
+                    put("name", login)
+                    put("password", pass)
+                }
+
+                val request = object : JsonObjectRequest(
+                    Method.POST,
+                    url,
+                    jsonObject,
+                    Response.Listener<JSONObject> { response ->
+                        println("Response: $response")
+                        // Здесь вы можете добавить дополнительную обработку успешного ответа
+                    },
+                    Response.ErrorListener { error ->
+                        println("Error: ${error.networkResponse}")
+                        println("Что-то пошло не так")
+                        // Выведите содержимое ошибки для дальнейшей диагностики
+                        error.printStackTrace()
+                    }) {
+                    override fun getBodyContentType(): String {
+                        return "application/json"
+                    }
+                }
+
+                queue.add(request)
+
+
+
+
+
+                val user : User = User(1, login, email, pass, 1)
+                db.clearCurrentUserTable()
+                db.put_user(user)
                 Toast.makeText(this, "Пользователь добавлен", Toast.LENGTH_LONG).show()
                 linkToAuth.callOnClick()
                 userLogin.text.clear()
@@ -43,6 +82,7 @@ class MainActivity : AppCompatActivity() {
 
         linkToAuth.setOnClickListener {
             val intent = Intent(this, AuthActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
         }
 
