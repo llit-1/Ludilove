@@ -18,6 +18,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_margin="5dp"
+
         android:layout_marginStart="10dp"
         android:layout_marginBottom="20dp"
         android:contentDescription="Баба"
@@ -56,20 +57,23 @@
         app:layout_constraintStart_toEndOf="@+id/cardView"
         app:layout_constraintTop_toTopOf="@+id/cardView" />
 
-    <Button
+    <ImageButton
         android:id="@+id/deleteItemButton"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/cross"
-        android:gravity="top"
-        android:paddingStart="10dp"
+        android:scaleType="centerCrop"
+        android:layout_width="34dp"
         android:scaleX="1"
         android:scaleY="1"
+        android:layout_height="34dp"
+        app:tint="@color/orange"
+        android:backgroundTint="@android:color/transparent"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        android:src="@drawable/cross"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/item_cart_title"
         app:layout_constraintTop_toTopOf="@+id/cartWrapper" />
+
 
     <ImageButton
         android:id="@+id/decreaseButton"

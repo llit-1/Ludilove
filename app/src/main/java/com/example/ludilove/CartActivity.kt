@@ -47,7 +47,6 @@ class CartActivity : AppCompatActivity() {
 
         backArrow_item.setOnClickListener {
             val intent = Intent(this, ItemsActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             this.startActivity(intent)
         }
     }

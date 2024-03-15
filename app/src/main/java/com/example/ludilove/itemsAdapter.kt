@@ -33,7 +33,6 @@ class ItemsAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        println("Сейчас должен быть релоуд адаптера")
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_in_list, parent, false)
         return MyViewHolder(view)
@@ -44,8 +43,22 @@ class ItemsAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        val db = DbHelper(context, null)
+        val lastUser = db.get_last_user()
+        val cartItems = db.getCartInfo(lastUser?.login.toString())
+
+        val isItemExists = cartItems.any { it.name == items[position].title }
+        println(items[position].title )
+        println(isItemExists)
+        if(isItemExists) {
+            val count = db.getCartItemQuantity(lastUser?.login.toString(), items[position].title)
+            holder.price.text = "В корзине"
+        } else {
+            holder.price.text = "${items[position].price} Р"
+        }
+
         holder.title.text = items[position].title
-        holder.price.text = "${items[position].price} Р"
+
 
         // Загрузка изображения с помощью Glide
         Glide.with(context)
@@ -59,10 +72,8 @@ class ItemsAdapter(
             intent.putExtra("ItemText", items[position].text)
             intent.putExtra("ItemPrice", items[position].price.toString())
             intent.putExtra("ItemImage", items[position].image)
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             context.startActivity(intent)
         }
-
-
-
     }
 }

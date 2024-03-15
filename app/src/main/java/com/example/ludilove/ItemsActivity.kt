@@ -22,26 +22,31 @@ class ItemsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_items)
-
+        // Полноэкранный режим
         FullScreenHelper.enableFullScreen(window)
+
+        // Получаем RecyclerView для товаров
         val itemsList : RecyclerView = findViewById(R.id.itemsList)
+        // Создаем массив для заполнения товаров
         val items = arrayListOf<Item>()
+        // Получаем RecyclerView для категорий
         val horizontalItemsList : RecyclerView = findViewById(R.id.horizontalItemsList)
+        // Создаем массив для заполнения категорий
         val categoryItem = arrayListOf<Category>()
 
 
 
-        fun requestData(restId: Int, username: String, password: String) {
+        fun requestData(username: String, password: String) {
             val progressBar : ProgressBar = findViewById(R.id.progressBar)
             progressBar.visibility = View.VISIBLE
-            val url = "https://api.ludilove.ru/deliveryclub/menus/$restId"
+            val url = "https://api.ludilove.ru/deliveryclub/menus/"
             val queue = Volley.newRequestQueue(this)
             val request = object : StringRequest(
                 Method.GET,
                 url,
                 { response ->
                     val gson = Gson()
-                    val menuResponse = gson.fromJson(response, JsonData.MenuResponse::class.java)
+                    val menuResponse = gson.fromJson(response, JsonData.Categories::class.java)
                     val products = menuResponse.menuItems.products;
                     val categories = menuResponse.menuItems.categories;
                     for(product in products) {
@@ -110,21 +115,22 @@ class ItemsActivity : AppCompatActivity() {
         buttonCart.text = result;
         buttonCart.setOnClickListener {
             val intent = Intent(this, CartActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
 
-        requestData(13, "powerbi","'ythubz-'ythubz=59")
+        requestData("powerbi","'ythubz-'ythubz=59")
 
         val exit : ImageView = findViewById(R.id.backArrow_item_exit)
         exit.setOnClickListener {
-            val userLogin = db.get_last_user()
+            @Suppress("NAME_SHADOWING") val userLogin = db.get_last_user()
             showConfirmationDialog(userLogin?.login)
         }
     }
 
     override fun onResume() {
         super.onResume()
+
         val db = DbHelper(this, null)
         val userLogin = db.get_last_user()
         val result = db.getCartCount(userLogin?.login)
@@ -132,6 +138,7 @@ class ItemsActivity : AppCompatActivity() {
         buttonCart.text = result;
     }
 
+    // Вызов окна подтверждения (да\нет)
     private fun showConfirmationDialog(login : String?) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Подтверждение")

@@ -17,7 +17,7 @@ class CartAdapter(var carts: List<Cart>, var context : Context) : RecyclerView.A
         val title: TextView = view.findViewById(R.id.item_cart_title)
         val count: TextView = view.findViewById(R.id.item_cart_count)
         val price: TextView = view.findViewById(R.id.item_cart_price)
-        val delete: Button = view.findViewById(R.id.deleteItemButton)
+        val delete: ImageButton = view.findViewById(R.id.deleteItemButton)
         val decrItem: ImageButton = view.findViewById(R.id.decreaseButton)
         val incrItem: ImageButton = view.findViewById(R.id.increaseButton)
     }

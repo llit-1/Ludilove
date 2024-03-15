@@ -7,22 +7,22 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?) :
-    SQLiteOpenHelper(context, "app", factory, 11) {
-    override fun onCreate(db: SQLiteDatabase?) {
-        val query2 = "CREATE TABLE cart (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, user_login TEXT, price INT, image TEXT, count INT)"
-        db!!.execSQL(query2)
-        val query3 = "CREATE TABLE current_user (id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT, email TEXT, password TEXT, isAuth INT)"
-        db.execSQL(query3)
-    }
+        SQLiteOpenHelper(context, "app", factory, 11) {
+            override fun onCreate(db: SQLiteDatabase?) {
+                val query2 = "CREATE TABLE cart (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, user_login TEXT, price INT, image TEXT, count INT)"
+                db!!.execSQL(query2)
+                val query3 = "CREATE TABLE current_user (id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT, email TEXT, password TEXT, isAuth INT)"
+                db.execSQL(query3)
+            }
 
-    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db!!.execSQL("DROP TABLE IF EXISTS cart")
-        db!!.execSQL("DROP TABLE IF EXISTS current_user")
-        onCreate(db)
-    }
+            override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+                db!!.execSQL("DROP TABLE IF EXISTS cart")
+                db!!.execSQL("DROP TABLE IF EXISTS current_user")
+                onCreate(db)
+            }
 
-    // Очищает таблицу с последним пользователем
-    fun clearCurrentUserTable() {
+            // Очищает таблицу с последним пользователем
+            fun clearCurrentUserTable() {
         val db = this.writableDatabase
         db.delete("current_user", null, null)
         db.close()
@@ -133,6 +133,21 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
             "Пусто"
         }
     }
+
+    @SuppressLint("Range")
+    fun getCartItemQuantity(userLogin: String?, itemName: String): Int {
+        val db = this.readableDatabase
+        val query = "SELECT count FROM cart WHERE user_login = ? AND name = ?"
+        val cursor = db.rawQuery(query, arrayOf(userLogin, itemName))
+        var quantity = 0
+        cursor.use {
+            if (it.moveToFirst()) {
+                quantity = it.getInt(it.getColumnIndex("count"))
+            }
+        }
+        return quantity
+    }
+
     fun deleteCartItemsByUserLogin(userLogin: String?) {
         val db = this.writableDatabase
         val query = "DELETE FROM cart WHERE user_login = '$userLogin'"
