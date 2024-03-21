@@ -17,8 +17,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        FullScreenHelper.enableFullScreen(window)
+//        FullScreenHelper.enableFullScreen(window)
 
         val userLogin : EditText = findViewById(R.id.user_login)
         val userEmail : EditText = findViewById(R.id.user_email)
@@ -54,7 +53,6 @@ class MainActivity : AppCompatActivity() {
                     },
                     Response.ErrorListener { error ->
                         println("Error: ${error.networkResponse}")
-                        println("Что-то пошло не так")
                         // Выведите содержимое ошибки для дальнейшей диагностики
                         error.printStackTrace()
                     }) {

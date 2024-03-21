@@ -7,28 +7,32 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?) :
-        SQLiteOpenHelper(context, "app", factory, 11) {
-            override fun onCreate(db: SQLiteDatabase?) {
-                val query2 = "CREATE TABLE cart (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, user_login TEXT, price INT, image TEXT, count INT)"
-                db!!.execSQL(query2)
-                val query3 = "CREATE TABLE current_user (id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT, email TEXT, password TEXT, isAuth INT)"
-                db.execSQL(query3)
-            }
+        SQLiteOpenHelper(context, "app", factory, 12) {
+    override fun onCreate(db: SQLiteDatabase?) {
+        val query1 =
+            "CREATE TABLE cart (id INTEGER, name TEXT, user_login TEXT, price INT, image TEXT, count INT)"
+        db!!.execSQL(query1)
+        val query2 =
+            "CREATE TABLE current_user (id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT, email TEXT, password TEXT, isAuth INT)"
+        db.execSQL(query2)
+        val query3 = "CREATE TABLE json_data (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT)"
+        db.execSQL(query3)
+    }
 
-            override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-                db!!.execSQL("DROP TABLE IF EXISTS cart")
-                db!!.execSQL("DROP TABLE IF EXISTS current_user")
-                onCreate(db)
-            }
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        db!!.execSQL("DROP TABLE IF EXISTS cart")
+        db!!.execSQL("DROP TABLE IF EXISTS current_user")
+        db!!.execSQL("DROP TABLE IF EXISTS json_data")
+        onCreate(db)
+    }
 
-            // Очищает таблицу с последним пользователем
-            fun clearCurrentUserTable() {
+    // Очищает таблицу с последним пользователем
+    fun clearCurrentUserTable() {
         val db = this.writableDatabase
         db.delete("current_user", null, null)
         db.close()
     }
 
-    //     е
     fun change_last_user(login : String, isAuth : Int) {
         val db = this.writableDatabase
         val contentValues = ContentValues()
@@ -69,7 +73,7 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
         return user // Возвращение объекта user или null
     }
     @SuppressLint("Range")
-    fun addToCart(name: String, price: Int, userLogin: String, image: String, count: Int) {
+    fun addToCart(id: Int, name: String, price: Int, userLogin: String, image: String, count: Int) {
         val db = this.writableDatabase
 
         // Проверяем, существует ли запись с таким именем товара и пользовательским логином
@@ -88,6 +92,7 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
         } else {
             // Если запись не существует, добавляем новую запись
             val values = ContentValues()
+            values.put("id", id)
             values.put("name", name)
             values.put("user_login", userLogin)
             values.put("price", price)
@@ -123,7 +128,6 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
     fun getCartCount(userLogin: String?): String? {
         val db = this.readableDatabase
         val result = db.rawQuery("SELECT COUNT(*) FROM cart WHERE user_login = '${userLogin}'", null)
-        println(result)
         return if (result.moveToFirst()) {
             val count = result.getString(0)
             result.close()
@@ -182,5 +186,28 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
         }
         cursor.close()
         db.close()
+    }
+
+    fun saveJsonData(jsonData: String) {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put("data", jsonData)
+        }
+        db.insert("json_data", null, values)
+        db.close()
+    }
+
+    fun getJsonData(): String? {
+        val db = this.readableDatabase
+        val query = "SELECT data FROM json_data ORDER BY id DESC LIMIT 1"
+        val cursor = db.rawQuery(query, null)
+        var jsonData: String? = null
+        cursor.use {
+            if (it.moveToFirst()) {
+                jsonData = it.getString(0)
+            }
+        }
+        db.close()
+        return jsonData
     }
 }

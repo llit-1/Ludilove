@@ -1,43 +1,45 @@
 package com.example.ludilove
 
-class JsonData {
-//    data class MenuResponse(
-//        val lastUpdatedAt: String,
-//        val menuItems: MenuItems
-//    )
-//
-//    data class MenuItems(
-//        val categories: List<Category>,
-//        val products: List<Product>
-//    )
-//
-//    data class Category(
-//        val id: String,
-//        val parentId: String,
-//        val name: String
-//    )
-//
-    data class Categories(
-        val id: Int,
-        val categoryName: String,
-        val image: String,
-        val responseItems: List<Product>
-    )
+import com.google.gson.annotations.SerializedName
 
-    data class Product(
-        val id: String,
-        val name: String,
-        val price: Int,
-        val image: String,
-        val menuCategory: Int,
-        val description: String,
-        val measure: Measure,
-        val amount: Int
-    )
+data class JsonData(
+    @SerializedName("categories")
+    val categories: List<Category>
+)
 
-    data class Measure(
-        val id: Int,
-        val name: String
-    )
-}
+data class Category(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("categoryName")
+    val categoryName: String,
+    @SerializedName("image")
+    val image: String,
+    @SerializedName("responseItems")
+    val responseItems: List<ResponseItem>
+)
 
+data class ResponseItem(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("price")
+    val price: Int?, // Измените тип данных на double, если цены представлены числами
+    @SerializedName("image")
+    val image: String,
+    @SerializedName("menuCategory")
+    val menuCategory: Int,
+    @SerializedName("description")
+    val description: String,
+    @SerializedName("measure")
+    val measure: Measure,
+    @SerializedName("amount")
+    val amount: Int
+)
+
+data class Measure(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String
+)

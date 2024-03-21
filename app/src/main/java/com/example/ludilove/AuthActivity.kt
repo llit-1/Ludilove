@@ -16,7 +16,7 @@ class AuthActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
-        FullScreenHelper.enableFullScreen(window)
+//        FullScreenHelper.enableFullScreen(window)
 
         val loader: ProgressBar = findViewById(R.id.bars)
         loader.visibility = View.VISIBLE;
@@ -29,7 +29,6 @@ class AuthActivity : AppCompatActivity(){
         // Если запись есть, тогда проверяем авторизацию, иначе идем на полную авторизацию
         val db = DbHelper(this, null)
         val lastUser = db.get_last_user()
-        println(lastUser?.login)
         if(lastUser != null)
         {
             // Если пользователь авторизован пускаем его на главный экран, иначе продолжаем авторизацию

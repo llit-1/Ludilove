@@ -3,6 +3,7 @@ package com.example.ludilove
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
 import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,7 +21,7 @@ class ItemActivity : AppCompatActivity() {
         setContentView(R.layout.activity_item)
 
         // Включаем полноэкранный режим
-        FullScreenHelper.enableFullScreen(window)
+//        FullScreenHelper.enableFullScreen(window)
         // Получаем элементы страницы
         val title : TextView = findViewById(R.id.item_list_title_second)
         val image : ImageView = findViewById(R.id.item_list_image)
@@ -65,9 +66,15 @@ class ItemActivity : AppCompatActivity() {
             countItemInCart.isVisible = true
             plusButton.isVisible = true
             // Добавляем в корзину 1 товар
-            db.addToCart(title.text.toString(), intent.getStringExtra("ItemPrice")!!.toInt(), userLogin!!.login, intent.getStringExtra("ItemImage")!!, 1)
+            db.addToCart(intent.getStringExtra("ItemId")!!.toInt() ,title.text.toString(), intent.getStringExtra("ItemPrice")!!.toInt(), userLogin!!.login, intent.getStringExtra("ItemImage")!!, 1)
             // Меняем прозрачность минуса
             minusButton.alpha = 0.3F
+
+            arrowBack.setOnClickListener {
+                val intent = Intent(this, ItemsActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                this.startActivity(intent)
+            }
         }
 
         // При тыке на кнопку "+"
@@ -114,7 +121,7 @@ class ItemActivity : AppCompatActivity() {
 
         arrowBack.setOnClickListener {
             val intent = Intent(this, ItemsActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.flags = FLAG_ACTIVITY_REORDER_TO_FRONT;
             this.startActivity(intent)
         }
 

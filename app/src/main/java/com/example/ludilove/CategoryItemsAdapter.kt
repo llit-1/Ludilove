@@ -20,9 +20,9 @@ class CategoryItemsAdapter(var categories: List<Category>, var context: Context)
         return categories.count()
     }
     override fun onBindViewHolder(holder: MyViewCategoryHolder, position: Int) {
-        holder.title.text = categories[position].name
+        holder.title.text = categories[position].categoryName
         holder.itemView.setOnClickListener {
-            itemClickListener?.onItemClick(position * 5)
+            itemClickListener?.onItemClick(position)
         }
     }
 

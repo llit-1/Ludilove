@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/textview_for_category"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:fontFamily="@font/akrobat_bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Категория №1"
+        android:paddingStart="10dp"
+        android:textSize="22dp"
+        android:gravity="center|start"
+    />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_for_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/akrobat_regular"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_for_category" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
