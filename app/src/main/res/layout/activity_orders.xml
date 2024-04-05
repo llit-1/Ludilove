@@ -14,14 +14,14 @@
         tools:context=".ItemsActivity">
 
         <ImageButton
-            android:id="@+id/backArrow_item_exit"
+            android:id="@+id/button_for_old_orders"
             android:layout_width="50dp"
-            android:layout_height="55dp"
+            android:layout_height="60dp"
             android:textAlignment="center"
             android:paddingBottom="0dp"
             android:textColor="@color/white"
             android:background="@color/orange"
-            android:src="@drawable/exit"
+            android:src="@drawable/folder"
             android:scaleType="fitCenter"
             app:tint="@color/white"
             android:textSize="24dp"
@@ -30,96 +30,89 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/helper_for_logo"
-
             app:layout_constraintHorizontal_bias="0.0"
             />
 
         <TextView
             android:id="@+id/helper_for_logo"
             android:layout_width="0dp"
-            android:layout_height="55dp"
+            android:layout_height="60dp"
             android:background="@color/orange"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="Кантемировская ул., 37"
+            android:text="Активные заказы"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="16dp"
+            android:textSize="22dp"
             android:fontFamily="@font/akrobat_regular"
-            app:layout_constraintStart_toEndOf="@+id/link_to_auth"
-            app:layout_constraintEnd_toStartOf="@id/backArrow_item_exit"
+            app:layout_constraintStart_toEndOf="@+id/backArrow_item"
+            app:layout_constraintEnd_toStartOf="@id/button_for_old_orders"
             />
 
         <ImageButton
-            android:id="@+id/link_to_auth"
-            android:layout_width="50dp"
-            android:layout_height="55dp"
-            android:gravity="start"
-            android:background="@color/orange"
-            android:fontFamily="@font/akrobat_bold"
-            android:src="@drawable/logo"
-            android:scaleType="fitCenter"
+            android:id="@+id/backArrow_item"
+            android:layout_width="35dp"
+            android:layout_height="60dp"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:paddingBottom="5dp"
             android:textColor="@color/white"
-            android:textSize="26sp"
-            app:layout_constraintEnd_toStartOf="@id/helper_for_logo"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:background="@color/orange"
+            android:src="@drawable/free_icon_font_angle_left_3916931"
+            app:tint="@color/white"
+            android:textSize="24dp"
+            android:paddingTop="10dp"
+            android:paddingVertical="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/helper_for_logo"
             app:layout_constraintBottom_toTopOf="@+id/horizontalItemsList"
-        />
+            />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/horizontalItemsList"
+            android:visibility="invisible"
             android:layout_marginTop="4dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_width="match_parent"
+            android:paddingBottom="68dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:backgroundTint="@android:color/transparent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/link_to_auth"
-        />
+            app:layout_constraintTop_toBottomOf="@+id/backArrow_item"
+            />
 
-        <!-- Второй RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/itemsList"
+        <ImageView
+            android:id="@+id/sad_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/sad_icon"
+            app:layout_constraintTop_toBottomOf="@+id/helper_for_logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:tint="#74BCBCBC"
+            android:layout_marginTop="40dp"
+            />
+
+        <TextView
+            android:id="@+id/sad_message"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_weight="1"
-            android:paddingTop="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="wrap_content"
+            android:text="Тут пока ничего нет"
+            app:layout_constraintTop_toBottomOf="@+id/sad_icon"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalItemsList" />
-
+            android:fontFamily="@font/akrobat_regular"
+            android:textColor="#6B000000"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:textSize="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Круглая кнопка в правом нижнем углу -->
-    <androidx.cardview.widget.CardView
-        android:layout_height="70dp"
-        android:layout_width="70dp"
-        android:background="@drawable/full_rouded_button"
-        android:backgroundTint="@color/orange"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
-        app:cardCornerRadius="35dp">
-
-        <Button
-            android:id="@+id/cartCount"
-            android:textSize="16dp"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:fontFamily="@font/akrobat_regular"
-            android:text="Пусто"
-            android:backgroundTint="#E6690F" />
-    </androidx.cardview.widget.CardView>
 
 </FrameLayout>

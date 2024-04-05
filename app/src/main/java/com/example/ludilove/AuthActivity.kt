@@ -62,7 +62,6 @@ class AuthActivity : AppCompatActivity(){
                 db.clearCurrentUserTable()
                 db.put_user(user)
                 checkUser(login, pass)
-                Toast.makeText(this, "Пользователь $login авторизован", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -75,18 +74,22 @@ class AuthActivity : AppCompatActivity(){
             Method.GET,
             url,
             { response ->
-                if(response.toBoolean()) {
-                    db.change_last_user(login, 1)
+                if(response != null) {
+                    db.change_last_user(login, 1, response)
                     val intent = Intent(this, ItemsActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     val loader: ProgressBar = findViewById(R.id.bars)
                     loader.visibility = View.INVISIBLE;
+                    Toast.makeText(this, "Пользователь $login авторизован", Toast.LENGTH_LONG).show()
                     startActivity(intent)
                     finish()
+                } else {
+                    Toast.makeText(this, "Пользователь $login не авторизован", Toast.LENGTH_LONG).show()
                 }
             },
             { error ->
                 println(error)
+                Toast.makeText(this, "Ошибка, попробуйте позже", Toast.LENGTH_LONG).show()
             }) {}
         queue.add(request)
     }

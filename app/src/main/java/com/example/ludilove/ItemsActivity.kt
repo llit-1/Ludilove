@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Scroller
 import androidx.appcompat.app.AppCompatActivity
@@ -131,8 +132,17 @@ class ItemsActivity : AppCompatActivity() {
         val exit : ImageView = findViewById(R.id.backArrow_item_exit)
         exit.setOnClickListener {
             @Suppress("NAME_SHADOWING") val userLogin = db.get_last_user()
-            showConfirmationDialog(userLogin?.login)
+            showConfirmationDialog(userLogin?.login, userLogin!!.id)
         }
+
+        val link_to_auth : ImageButton = findViewById(R.id.link_to_auth)
+
+        link_to_auth.setOnClickListener {
+            val intent = Intent(this, OrdersActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
+
 
 
 
@@ -152,7 +162,7 @@ class ItemsActivity : AppCompatActivity() {
     }
 
     // Вызов окна подтверждения (да\нет)
-    private fun showConfirmationDialog(login : String?) {
+    private fun showConfirmationDialog(login : String?, id : Int) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Подтверждение")
         builder.setMessage("Вы уверены, что хотите выйти?")
@@ -164,7 +174,8 @@ class ItemsActivity : AppCompatActivity() {
         builder.setNegativeButton("Да") { dialog, which ->
             val db = DbHelper(this, null)
             if (login != null) {
-                db.change_last_user(login, 0)
+                db.get_last_user()
+                db.change_last_user(login, 0, id.toString())
             }
             val intent = Intent(this, AuthActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

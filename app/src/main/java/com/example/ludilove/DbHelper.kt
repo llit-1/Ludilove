@@ -7,13 +7,13 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?) :
-        SQLiteOpenHelper(context, "app", factory, 12) {
+        SQLiteOpenHelper(context, "app", factory, 13) {
     override fun onCreate(db: SQLiteDatabase?) {
         val query1 =
             "CREATE TABLE cart (id INTEGER, name TEXT, user_login TEXT, price INT, image TEXT, count INT)"
         db!!.execSQL(query1)
         val query2 =
-            "CREATE TABLE current_user (id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT, email TEXT, password TEXT, isAuth INT)"
+            "CREATE TABLE current_user (id INTEGER PRIMARY KEY, login TEXT, email TEXT, password TEXT, isAuth INT)"
         db.execSQL(query2)
         val query3 = "CREATE TABLE json_data (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT)"
         db.execSQL(query3)
@@ -33,15 +33,17 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
         db.close()
     }
 
-    fun change_last_user(login : String, isAuth : Int) {
+    fun change_last_user(login: String, isAuth: Int, id: String) {
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put("isAuth", isAuth)
+        contentValues.put("id", id) // Добавляем поле id
         val whereClause = "login = ?" // Здесь используется параметр
         val whereArgs = arrayOf(login) // Здесь передается значение параметра
         db.update("current_user", contentValues, whereClause, whereArgs)
         db.close()
     }
+
 
     fun put_user(user : User) {
         val db = this.writableDatabase
