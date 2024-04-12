@@ -2,11 +2,15 @@ package com.example.ludilove
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Scroller
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -49,14 +53,16 @@ class ItemsActivity : AppCompatActivity() {
                             }
                         smoothScroller.targetPosition = position;
                         (itemsList.layoutManager as GridLayoutManager).startSmoothScroll(smoothScroller);
-
-
                 }
             })
 
 
 
         }
+
+        val progressBar : ProgressBar = findViewById(R.id.progressBar)
+        progressBar.visibility = View.INVISIBLE
+
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,8 +76,10 @@ class ItemsActivity : AppCompatActivity() {
         // Получаем RecyclerView для категорий
         val horizontalItemsList : RecyclerView = findViewById(R.id.horizontalItemsList)
         // Создаем массив для заполнения категорий
-        //val categoryItem = arrayListOf<Category>()
-
+        val locations : TextView = findViewById(R.id.helper_for_logo)
+        val db = DbHelper(this, null)
+        locations.text = db.getLocationsData()?.address
+        locations.paintFlags = locations.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
 
         fun requestData() {
@@ -89,16 +97,6 @@ class ItemsActivity : AppCompatActivity() {
                     // Обработка ошибки
                     println(error)
                 }) {
-
-                /*// Переопределение метода для установки заголовка авторизации
-                override fun getHeaders(): MutableMap<String, String> {
-                    val headers = HashMap<String, String>()
-                    val auth = "$username:$password"
-                    val encodedAuth = Base64.encodeToString(auth.toByteArray(), Base64.DEFAULT)
-                    val authHeaderValue = "Basic $encodedAuth"
-                    headers["Authorization"] = authHeaderValue
-                    return headers
-                }*/
             }
             queue.add(request)
         }
@@ -111,7 +109,7 @@ class ItemsActivity : AppCompatActivity() {
 
         val buttonCart : Button = findViewById(R.id.cartCount)
 
-        val db = DbHelper(this, null)
+
         val userLogin = db.get_last_user()
         val result = db.getCartCount(userLogin?.login)
         buttonCart.text = result;
@@ -139,6 +137,13 @@ class ItemsActivity : AppCompatActivity() {
 
         link_to_auth.setOnClickListener {
             val intent = Intent(this, OrdersActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
+
+
+        locations.setOnClickListener {
+            val intent = Intent(this, LocationActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }

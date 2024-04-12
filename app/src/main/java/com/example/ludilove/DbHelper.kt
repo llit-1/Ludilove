@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?) :
-        SQLiteOpenHelper(context, "app", factory, 13) {
+        SQLiteOpenHelper(context, "app", factory, 15) {
     override fun onCreate(db: SQLiteDatabase?) {
         val query1 =
             "CREATE TABLE cart (id INTEGER, name TEXT, user_login TEXT, price INT, image TEXT, count INT)"
@@ -17,12 +17,16 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
         db.execSQL(query2)
         val query3 = "CREATE TABLE json_data (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT)"
         db.execSQL(query3)
+
+        val query4 = "CREATE TABLE location (id INTEGER PRIMARY KEY,address TEXT,coordinates TEXT,distance TEXT,status INTEGER)"
+        db.execSQL(query4)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         db!!.execSQL("DROP TABLE IF EXISTS cart")
         db!!.execSQL("DROP TABLE IF EXISTS current_user")
         db!!.execSQL("DROP TABLE IF EXISTS json_data")
+        db!!.execSQL("DROP TABLE IF EXISTS location")
         onCreate(db)
     }
 
@@ -212,4 +216,47 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
         db.close()
         return jsonData
     }
+
+    @SuppressLint("Recycle", "Range")
+    fun getLocationsData() : Location? {
+        val db = this.readableDatabase
+        val query = "SELECT * FROM location LIMIT 1"
+        val cursor = db.rawQuery(query, null)
+        var loc: Location? = null // Инициализируем объект loc значением null
+
+        if (cursor.moveToFirst()) {
+            loc = Location(
+                locationId = cursor.getInt(cursor.getColumnIndex("id")),
+                address = cursor.getString(cursor.getColumnIndex("address")),
+                coordinates = cursor.getString(cursor.getColumnIndex("coordinates")),
+                distance = cursor.getString(cursor.getColumnIndex("distance")),
+                status = cursor.getInt(cursor.getColumnIndex("status"))
+            )
+        }
+
+        cursor.close()
+        db.close()
+        return loc
+    }
+
+    fun deleteAndInsertLocation(location: Location) {
+        val db = this.writableDatabase
+
+        // Удаляем все строки из таблицы location
+        db.delete("location", null, null)
+
+        // Добавляем новую строку
+        val values = ContentValues().apply {
+            put("id", location.locationId)
+            put("address", location.address)
+            put("coordinates", location.coordinates)
+            put("distance", location.distance)
+            put("status", location.status)
+        }
+
+        db.insert("location", null, values)
+
+        db.close()
+    }
+
 }

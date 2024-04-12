@@ -94,6 +94,7 @@
             app:layout_constraintTop_toBottomOf="@+id/helper_for_logo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="invisible"
             android:tint="#74BCBCBC"
             android:layout_marginTop="40dp"
             />
@@ -103,6 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Тут пока ничего нет"
+            android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@+id/sad_icon"
             app:layout_constraintStart_toStartOf="parent"
             android:fontFamily="@font/akrobat_regular"
@@ -112,6 +114,15 @@
             android:textSize="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/helper_for_logo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

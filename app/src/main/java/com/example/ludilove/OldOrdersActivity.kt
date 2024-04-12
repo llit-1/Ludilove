@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,8 +17,10 @@ import com.google.gson.Gson
 class OldOrdersActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_orders)
+
+        val button_for_old_orders : ImageButton = findViewById(R.id.button_for_old_orders)
+        button_for_old_orders.setImageDrawable(null)
         val helper_for_logo : TextView = findViewById(R.id.helper_for_logo)
         helper_for_logo.setText("Завершенные заказы")
 
@@ -35,10 +38,10 @@ class OldOrdersActivity : AppCompatActivity() {
                 Method.GET,
                 url,
                 { response ->
+                    val progressBar : ProgressBar = findViewById(R.id.progressBar)
                     val orderResponse = Gson().fromJson(response, OrderResponse::class.java)
-                    val button_for_old_orders : ImageButton = findViewById(R.id.button_for_old_orders)
-                    button_for_old_orders.setImageDrawable(null)
                     val backArrow_item : ImageButton = findViewById(R.id.backArrow_item)
+
                     backArrow_item.setOnClickListener {
                         val intent = Intent(this, OrdersActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -46,20 +49,16 @@ class OldOrdersActivity : AppCompatActivity() {
                     }
 
                     if(orderResponse.responseOrders.isNotEmpty()) {
-                        val sad_icon : ImageView = findViewById(R.id.sad_icon)
-                        val sad_message : TextView = findViewById(R.id.sad_message)
-
-                        sad_icon.visibility = View.INVISIBLE
-                        sad_message.visibility = View.INVISIBLE
-
-
-
                         orderList.visibility = View.VISIBLE
                         orderList.layoutManager = LinearLayoutManager(this)
                         orderList.adapter = OrdersAdapter(orderResponse.responseOrders)
+                    } else {
+                        val sad_icon : ImageView = findViewById(R.id.sad_icon)
+                        val sad_message : TextView = findViewById(R.id.sad_message)
+                        sad_icon.visibility = View.VISIBLE
+                        sad_message.visibility = View.VISIBLE
                     }
-
-
+                    progressBar.visibility = View.INVISIBLE
                 },
                 { error ->
                     println(error)

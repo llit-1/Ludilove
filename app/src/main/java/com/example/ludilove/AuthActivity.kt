@@ -9,21 +9,14 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 
 class AuthActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_auth)
-//        FullScreenHelper.enableFullScreen(window)
-
-        val loader: ProgressBar = findViewById(R.id.bars)
-        loader.visibility = View.VISIBLE;
-        val userLoginAuth : EditText = findViewById(R.id.user_login_auth)
-        val userPassAuth: EditText = findViewById(R.id.user_pass_auth)
-        val buttonAuth: Button = findViewById(R.id.button_auth)
-        val linkToReg : TextView = findViewById(R.id.link_to_reg)
 
         // Проверяем наличие записанного в файловую бд пользователя
         // Если запись есть, тогда проверяем авторизацию, иначе идем на полную авторизацию
@@ -33,21 +26,51 @@ class AuthActivity : AppCompatActivity(){
         {
             // Если пользователь авторизован пускаем его на главный экран, иначе продолжаем авторизацию
             if(lastUser.isAuth == 1) {
-                checkUser(lastUser.login, lastUser.password)
+                val loc = db.getLocationsData()
+                if(loc == null) {
+                    val coordHandler = getBestBakeryByCoord(this)
+                    coordHandler.getBakery(object : getBestBakeryByCoord.CoordCallback {
+                        override fun onCoordReceived(locations: List<Location>) {
+                            db.deleteAndInsertLocation(locations[0])
+                            checkUser(lastUser.login, lastUser.password)
+                            return
+                        }
+                        override fun onCoordFailed() {
+                            TODO("Not yet implemented")
+                        }
+                    })
+                } else {
+                    println("Что-то есть :/")
+                    checkUser(lastUser.login, lastUser.password)
+                    return
+                }
             } else {
+                setContentView(R.layout.activity_auth)
+
+                val userLoginAuth : EditText = findViewById(R.id.user_login_auth)
+                val userPassAuth: EditText = findViewById(R.id.user_pass_auth)
+                val buttonAuth: Button = findViewById(R.id.button_auth)
+                val linkToReg : TextView = findViewById(R.id.link_to_reg)
+
+
                 userLoginAuth.setText(lastUser.login);
                 userPassAuth.setText(lastUser.password);
             }
+        } else {
+            setContentView(R.layout.activity_auth)
         }
 
-
+        setContentView(R.layout.activity_auth)
+        val userLoginAuth : EditText = findViewById(R.id.user_login_auth)
+        val userPassAuth: EditText = findViewById(R.id.user_pass_auth)
+        val buttonAuth: Button = findViewById(R.id.button_auth)
+        val linkToReg : TextView = findViewById(R.id.link_to_reg)
 
         linkToReg.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
             finish()
-            loader.visibility = View.INVISIBLE;
         }
 
         buttonAuth.setOnClickListener {
@@ -75,11 +98,19 @@ class AuthActivity : AppCompatActivity(){
             url,
             { response ->
                 if(response != null) {
+                    val coordHandler = getBestBakeryByCoord(this)
+                    coordHandler.getBakery(object : getBestBakeryByCoord.CoordCallback {
+                        override fun onCoordReceived(locations: List<Location>) {
+                            db.deleteAndInsertLocation(locations[0])
+                            db.change_last_user(login, 1, response)
+                        }
+                        override fun onCoordFailed() {
+                            TODO("Not yet implemented")
+                        }
+                    })
                     db.change_last_user(login, 1, response)
                     val intent = Intent(this, ItemsActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    val loader: ProgressBar = findViewById(R.id.bars)
-                    loader.visibility = View.INVISIBLE;
                     Toast.makeText(this, "Пользователь $login авторизован", Toast.LENGTH_LONG).show()
                     startActivity(intent)
                     finish()
@@ -96,7 +127,5 @@ class AuthActivity : AppCompatActivity(){
 
     override fun onResume() {
         super.onResume()
-        val loader: ProgressBar = findViewById(R.id.bars)
-        loader.visibility = View.INVISIBLE;
     }
 }

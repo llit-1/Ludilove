@@ -41,7 +41,12 @@
             android:background="@color/orange"
             app:layout_constraintTop_toTopOf="parent"
             android:text="Кантемировская ул., 37"
+            android:textStyle=""
+            android:maxLines="1"
+            android:ellipsize="end"
             android:gravity="center"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:textColor="@color/white"
             android:textSize="16dp"
             android:fontFamily="@font/akrobat_regular"
@@ -95,6 +100,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/horizontalItemsList" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/helper_for_logo" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,16 +33,20 @@ class OrdersActivity : AppCompatActivity() {
                 Method.GET,
                 url,
                 { response ->
+                    val progressBar : ProgressBar = findViewById(R.id.progressBar)
                     val orderResponse = Gson().fromJson(response, OrderResponse::class.java)
+                    println(orderResponse)
                     if(orderResponse.responseOrders.isNotEmpty()){
-                        val sad_icon : ImageView = findViewById(R.id.sad_icon)
-                        val sad_message : TextView = findViewById(R.id.sad_message)
-                        sad_icon.visibility = View.INVISIBLE
-                        sad_message.visibility = View.INVISIBLE
-
                         orderList.visibility = View.VISIBLE
                         orderList.layoutManager = LinearLayoutManager(this)
                         orderList.adapter = OrdersAdapter(orderResponse.responseOrders)
+                        progressBar.visibility = View.INVISIBLE
+                    } else {
+                        val sad_icon : ImageView = findViewById(R.id.sad_icon)
+                        val sad_message : TextView = findViewById(R.id.sad_message)
+                        sad_icon.visibility = View.VISIBLE
+                        sad_message.visibility = View.VISIBLE
+                        progressBar.visibility = View.INVISIBLE
                     }
                 },
                 { error ->
@@ -65,6 +70,7 @@ class OrdersActivity : AppCompatActivity() {
 
         val button_for_old_orders : ImageButton = findViewById(R.id.button_for_old_orders)
         button_for_old_orders.setOnClickListener {
+            button_for_old_orders.setImageDrawable(null)
             val intent = Intent(this, OldOrdersActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
