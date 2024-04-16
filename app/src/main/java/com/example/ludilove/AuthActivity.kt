@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.yandex.mapkit.MapKitFactory
 
 class AuthActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +23,7 @@ class AuthActivity : AppCompatActivity(){
         // Если запись есть, тогда проверяем авторизацию, иначе идем на полную авторизацию
         val db = DbHelper(this, null)
         val lastUser = db.get_last_user()
+        MapKitFactory.setApiKey("16b79d7a-5cb7-4281-840c-c47e5b487c75");
         if(lastUser != null)
         {
             // Если пользователь авторизован пускаем его на главный экран, иначе продолжаем авторизацию
@@ -46,46 +48,49 @@ class AuthActivity : AppCompatActivity(){
                 }
             } else {
                 setContentView(R.layout.activity_auth)
-
                 val userLoginAuth : EditText = findViewById(R.id.user_login_auth)
                 val userPassAuth: EditText = findViewById(R.id.user_pass_auth)
-                val buttonAuth: Button = findViewById(R.id.button_auth)
-                val linkToReg : TextView = findViewById(R.id.link_to_reg)
-
-
                 userLoginAuth.setText(lastUser.login);
                 userPassAuth.setText(lastUser.password);
             }
         } else {
-            setContentView(R.layout.activity_auth)
-        }
+            val coordHandler = getBestBakeryByCoord(this)
+            coordHandler.getBakery(object : getBestBakeryByCoord.CoordCallback {
+                override fun onCoordReceived(locations: List<Location>) {
+                    db.deleteAndInsertLocation(locations[0])
+                    setContentView(R.layout.activity_auth)
+                    val userLoginAuth : EditText = findViewById(R.id.user_login_auth)
+                    val userPassAuth: EditText = findViewById(R.id.user_pass_auth)
+                    val buttonAuth: Button = findViewById(R.id.button_auth)
+                    val linkToReg : TextView = findViewById(R.id.link_to_reg)
 
-        setContentView(R.layout.activity_auth)
-        val userLoginAuth : EditText = findViewById(R.id.user_login_auth)
-        val userPassAuth: EditText = findViewById(R.id.user_pass_auth)
-        val buttonAuth: Button = findViewById(R.id.button_auth)
-        val linkToReg : TextView = findViewById(R.id.link_to_reg)
+                    linkToReg.setOnClickListener {
+                        val intent = Intent(this@AuthActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(intent)
+                        finish()
+                    }
 
-        linkToReg.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
-            finish()
-        }
+                    buttonAuth.setOnClickListener {
+                        val login = userLoginAuth.text.toString().trim();
+                        val pass = userPassAuth.text.toString().trim();
+                        val email = "k"
 
-        buttonAuth.setOnClickListener {
-            val login = userLoginAuth.text.toString().trim();
-            val pass = userPassAuth.text.toString().trim();
-            val email = "k"
-
-            if(login == "" || pass == "") {
-                Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_LONG).show()
-            } else {
-                val user : User = User(1, login, email, pass, 1)
-                db.clearCurrentUserTable()
-                db.put_user(user)
-                checkUser(login, pass)
-            }
+                        if(login == "" || pass == "") {
+                            Toast.makeText(this@AuthActivity, "Не все поля заполнены", Toast.LENGTH_LONG).show()
+                        } else {
+                            val user : User = User(1, login, email, pass, 1)
+                            db.clearCurrentUserTable()
+                            db.put_user(user)
+                            checkUser(login, pass)
+                        }
+                    }
+                    return
+                }
+                override fun onCoordFailed() {
+                    TODO("Not yet implemented")
+                }
+            })
         }
     }
 
@@ -124,7 +129,6 @@ class AuthActivity : AppCompatActivity(){
             }) {}
         queue.add(request)
     }
-
     override fun onResume() {
         super.onResume()
     }

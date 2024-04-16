@@ -1,9 +1,6 @@
 package com.example.ludilove
 
 import android.content.Context
-import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin

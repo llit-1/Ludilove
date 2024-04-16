@@ -47,6 +47,8 @@
         <activity android:name=".OldOrdersActivity" />
         <activity android:name=".LocationActivity" />
 
+        <activity android:name=".MapsActivity" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

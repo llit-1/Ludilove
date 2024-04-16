@@ -2,29 +2,18 @@ package com.example.ludilove
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.view.View
-import android.widget.ProgressBar
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
-import androidx.transition.Visibility
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
+import com.yandex.mapkit.Animation
+import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.map.MapObjectTapListener
+import com.yandex.mapkit.mapview.MapView
+import com.yandex.runtime.image.ImageProvider
 
+class MapsActivity : AppCompatActivity(){
 
-
-class LocationActivity : AppCompatActivity() {
     val locationsResponse: List<Location> = listOf(
         Location(
             locationId = 1,
@@ -97,37 +86,66 @@ class LocationActivity : AppCompatActivity() {
             status = 1
         )
     )
+
+    private val startLocation = Point(59.938678, 30.314474)
+    private var zoomValue: Float = 12f
+
+    private val placemarkTapListener = MapObjectTapListener { mapObjects, point ->
+        val loca = mapObjects.userData as Location
+        ModalForMap(loca, this).show(supportFragmentManager, "MyDialogFragment")
+        true
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_locations)
 
-        val progressBar : ProgressBar = findViewById(R.id.progressBar)
-        val arrowToBack: ImageView = findViewById(R.id.arrowToBack)
-        arrowToBack.setOnClickListener {
-            val intent = Intent(this, ItemsActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        MapKitFactory.initialize(this@MapsActivity);
+        setContentView(R.layout.activity_maps)
+        val maps : MapView = findViewById(R.id.mapView)
+        maps.map.move(
+                CameraPosition(startLocation, zoomValue, 0.0f, 0.0f),
+                Animation(Animation.Type.LINEAR, 1f),
+                null)
+        val backArrow_item : ImageButton = findViewById(R.id.backArrow_item)
+        backArrow_item.setOnClickListener {
+            val intent = Intent(this, LocationActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
 
-        val autoLocation: ImageView = findViewById(R.id.auto_location)
-        autoLocation.setOnClickListener {
-            val intent = Intent(this, MapsActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-            startActivity(intent)
+        val imageProvider = ImageProvider.fromResource(this, R.drawable.pin)
+        val imageCurrentProvider = ImageProvider.fromResource(this, R.drawable.pin_picked)
+        val pinsCollection = maps.map.mapObjects.addCollection()
+
+        for(loc in locationsResponse) {
+            val parts = loc.coordinates.split(",")
+            val db = DbHelper(this, null)
+            val current_loc = db.getLocationsData()
+            val coord = Point(parts[0].toDouble(), parts[1].toDouble())
+            val reg = pinsCollection.addPlacemark().apply {
+                geometry = coord
+                userData = loc
+                if(current_loc?.locationId == loc.locationId) {
+                    setIcon(imageCurrentProvider)
+                } else {
+                    setIcon(imageProvider)
+                }
+
+            }
+            reg.addTapListener(placemarkTapListener)
         }
+    }
 
-        val location_wrapper : RecyclerView = findViewById(R.id.location_wrapper)
+    override fun onStart() {
+        super.onStart()
+        MapKitFactory.getInstance().onStart()
+        val maps : MapView = findViewById(R.id.mapView)
+        maps.onStart()
+    }
 
-        val coordHandler = getBestBakeryByCoord(this@LocationActivity)
-        coordHandler.getBakery(object : getBestBakeryByCoord.CoordCallback {
-            override fun onCoordReceived(locations: List<Location>) {
-                location_wrapper.layoutManager = LinearLayoutManager(this@LocationActivity)
-                location_wrapper.adapter = LocationsAdapter(locations)
-                progressBar.visibility = View.INVISIBLE
-            }
-            override fun onCoordFailed() {
-                TODO("Not yet implemented")
-            }
-        })
+    override fun onStop() {
+        MapKitFactory.getInstance().onStop()
+        val maps : MapView = findViewById(R.id.mapView)
+        maps.onStop()
+        super.onStop()
     }
 }

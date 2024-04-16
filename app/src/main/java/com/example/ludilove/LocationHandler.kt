@@ -6,8 +6,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -18,6 +16,7 @@ class LocationHandler(private val context: Context) {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val REQUEST_CODE_LOCATION_PERMISSION = 123
+    var maxRequests : Int = 0;
 
     interface LocationCallback {
         fun onLocationReceived(latitude: Double, longitude: Double)
@@ -35,6 +34,13 @@ class LocationHandler(private val context: Context) {
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_CODE_LOCATION_PERMISSION
             )
+            maxRequests++
+
+            if(maxRequests < 3) {
+                getCoordinates(callback)
+                // Сюда нужно модальное окно для оповещения пользователя
+            }
+
         } else {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
             val cancellationTokenSource = CancellationTokenSource()
@@ -54,5 +60,7 @@ class LocationHandler(private val context: Context) {
             }
         }
     }
+
+
 }
 
