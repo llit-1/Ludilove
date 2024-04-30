@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?) :
-        SQLiteOpenHelper(context, "app", factory, 15) {
+        SQLiteOpenHelper(context, "app", factory, 30) {
     override fun onCreate(db: SQLiteDatabase?) {
         val query1 =
             "CREATE TABLE cart (id INTEGER, name TEXT, user_login TEXT, price INT, image TEXT, count INT)"
@@ -17,9 +17,11 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
         db.execSQL(query2)
         val query3 = "CREATE TABLE json_data (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT)"
         db.execSQL(query3)
-
-        val query4 = "CREATE TABLE location (id INTEGER PRIMARY KEY,address TEXT,coordinates TEXT,distance TEXT,status INTEGER)"
+        val query4 = "CREATE TABLE location (guid STRING PRIMARY KEY,name TEXT, rkcode INTEGER,latitude DOUBLE, longitude DOUBLE,distance DOUBLE,actual INTEGER)"
         db.execSQL(query4)
+
+        val query5 = "CREATE TABLE allLocations (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT)"
+        db.execSQL(query5)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -27,6 +29,7 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
         db!!.execSQL("DROP TABLE IF EXISTS current_user")
         db!!.execSQL("DROP TABLE IF EXISTS json_data")
         db!!.execSQL("DROP TABLE IF EXISTS location")
+        db!!.execSQL("DROP TABLE IF EXISTS allLocations")
         onCreate(db)
     }
 
@@ -226,11 +229,13 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
 
         if (cursor.moveToFirst()) {
             loc = Location(
-                locationId = cursor.getInt(cursor.getColumnIndex("id")),
-                address = cursor.getString(cursor.getColumnIndex("address")),
-                coordinates = cursor.getString(cursor.getColumnIndex("coordinates")),
-                distance = cursor.getString(cursor.getColumnIndex("distance")),
-                status = cursor.getInt(cursor.getColumnIndex("status"))
+                guid = cursor.getString(cursor.getColumnIndex("guid")),
+                name = cursor.getString(cursor.getColumnIndex("name")),
+                rkCode = cursor.getInt(cursor.getColumnIndex("rkcode")),
+                latitude = cursor.getDouble(cursor.getColumnIndex("latitude")),
+                longitude = cursor.getDouble(cursor.getColumnIndex("longitude")),
+                distance = cursor.getDouble(cursor.getColumnIndex("distance")),
+                actual = cursor.getInt(cursor.getColumnIndex("actual"))
             )
         }
 
@@ -244,18 +249,42 @@ class DbHelper(val context: Context, val factory: SQLiteDatabase.CursorFactory?)
 
         // Удаляем все строки из таблицы location
         db.delete("location", null, null)
-
         // Добавляем новую строку
         val values = ContentValues().apply {
-            put("id", location.locationId)
-            put("address", location.address)
-            put("coordinates", location.coordinates)
+            put("guid", location.guid)
+            put("name", location.name)
+            put("rkcode", location.rkCode)
+            put("latitude", location.latitude)
+            put("longitude", location.longitude)
             put("distance", location.distance)
-            put("status", location.status)
+            put("actual", location.actual)
         }
 
         db.insert("location", null, values)
 
+        db.close()
+    }
+
+    fun getAllLocationsList() : String {
+        val db = this.readableDatabase
+        val query = "SELECT data FROM allLocations ORDER BY id DESC LIMIT 1"
+        val cursor = db.rawQuery(query, null)
+        var locationData: String = "";
+        cursor.use {
+            if (it.moveToFirst()) {
+                locationData = it.getString(0)
+            }
+        }
+        db.close()
+        return locationData
+    }
+
+    fun putAllLocationsList(locString : String) {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put("data", locString)
+        }
+        db.insert("allLocations", null, values)
         db.close()
     }
 

@@ -33,9 +33,9 @@ class OrdersActivity : AppCompatActivity() {
                 Method.GET,
                 url,
                 { response ->
+                    println(response)
                     val progressBar : ProgressBar = findViewById(R.id.progressBar)
                     val orderResponse = Gson().fromJson(response, OrderResponse::class.java)
-                    println(orderResponse)
                     if(orderResponse.responseOrders.isNotEmpty()){
                         orderList.visibility = View.VISIBLE
                         orderList.layoutManager = LinearLayoutManager(this)

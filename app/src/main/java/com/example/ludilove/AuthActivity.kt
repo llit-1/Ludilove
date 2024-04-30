@@ -24,12 +24,13 @@ class AuthActivity : AppCompatActivity(){
         val db = DbHelper(this, null)
         val lastUser = db.get_last_user()
         MapKitFactory.setApiKey("16b79d7a-5cb7-4281-840c-c47e5b487c75");
+
         if(lastUser != null)
         {
             // Если пользователь авторизован пускаем его на главный экран, иначе продолжаем авторизацию
             if(lastUser.isAuth == 1) {
                 val loc = db.getLocationsData()
-                if(loc == null) {
+                if(loc?.distance == null) {
                     val coordHandler = getBestBakeryByCoord(this)
                     coordHandler.getBakery(object : getBestBakeryByCoord.CoordCallback {
                         override fun onCoordReceived(locations: List<Location>) {
@@ -42,7 +43,6 @@ class AuthActivity : AppCompatActivity(){
                         }
                     })
                 } else {
-                    println("Что-то есть :/")
                     checkUser(lastUser.login, lastUser.password)
                     return
                 }
@@ -53,44 +53,34 @@ class AuthActivity : AppCompatActivity(){
                 userLoginAuth.setText(lastUser.login);
                 userPassAuth.setText(lastUser.password);
             }
-        } else {
-            val coordHandler = getBestBakeryByCoord(this)
-            coordHandler.getBakery(object : getBestBakeryByCoord.CoordCallback {
-                override fun onCoordReceived(locations: List<Location>) {
-                    db.deleteAndInsertLocation(locations[0])
-                    setContentView(R.layout.activity_auth)
-                    val userLoginAuth : EditText = findViewById(R.id.user_login_auth)
-                    val userPassAuth: EditText = findViewById(R.id.user_pass_auth)
-                    val buttonAuth: Button = findViewById(R.id.button_auth)
-                    val linkToReg : TextView = findViewById(R.id.link_to_reg)
+        }
 
-                    linkToReg.setOnClickListener {
-                        val intent = Intent(this@AuthActivity, MainActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        startActivity(intent)
-                        finish()
-                    }
+        setContentView(R.layout.activity_auth)
+        val userLoginAuth : EditText = findViewById(R.id.user_login_auth)
+        val userPassAuth: EditText = findViewById(R.id.user_pass_auth)
+        val buttonAuth: Button = findViewById(R.id.button_auth)
+        val linkToReg : TextView = findViewById(R.id.link_to_reg)
 
-                    buttonAuth.setOnClickListener {
-                        val login = userLoginAuth.text.toString().trim();
-                        val pass = userPassAuth.text.toString().trim();
-                        val email = "k"
+        linkToReg.setOnClickListener {
+            val intent = Intent(this@AuthActivity, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+            finish()
+        }
 
-                        if(login == "" || pass == "") {
-                            Toast.makeText(this@AuthActivity, "Не все поля заполнены", Toast.LENGTH_LONG).show()
-                        } else {
-                            val user : User = User(1, login, email, pass, 1)
-                            db.clearCurrentUserTable()
-                            db.put_user(user)
-                            checkUser(login, pass)
-                        }
-                    }
-                    return
-                }
-                override fun onCoordFailed() {
-                    TODO("Not yet implemented")
-                }
-            })
+        buttonAuth.setOnClickListener {
+            val login = userLoginAuth.text.toString().trim();
+            val pass = userPassAuth.text.toString().trim();
+            val email = "k"
+
+            if(login == "" || pass == "") {
+                Toast.makeText(this@AuthActivity, "Не все поля заполнены", Toast.LENGTH_LONG).show()
+            } else {
+                val user : User = User(1, login, email, pass, 1)
+                db.clearCurrentUserTable()
+                db.put_user(user)
+                checkUser(login, pass)
+            }
         }
     }
 
@@ -108,23 +98,22 @@ class AuthActivity : AppCompatActivity(){
                         override fun onCoordReceived(locations: List<Location>) {
                             db.deleteAndInsertLocation(locations[0])
                             db.change_last_user(login, 1, response)
+                            val intent = Intent(this@AuthActivity, ItemsActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            Toast.makeText(this@AuthActivity, "Пользователь $login авторизован", Toast.LENGTH_LONG).show()
+                            startActivity(intent)
+                            finish()
                         }
                         override fun onCoordFailed() {
                             TODO("Not yet implemented")
                         }
                     })
-                    db.change_last_user(login, 1, response)
-                    val intent = Intent(this, ItemsActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    Toast.makeText(this, "Пользователь $login авторизован", Toast.LENGTH_LONG).show()
-                    startActivity(intent)
-                    finish()
+
                 } else {
                     Toast.makeText(this, "Пользователь $login не авторизован", Toast.LENGTH_LONG).show()
                 }
             },
             { error ->
-                println(error)
                 Toast.makeText(this, "Ошибка, попробуйте позже", Toast.LENGTH_LONG).show()
             }) {}
         queue.add(request)

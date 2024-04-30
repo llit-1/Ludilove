@@ -1,9 +1,11 @@
 package com.example.ludilove
 
 data class Location(
-    var locationId: Int,
-    val address: String,
-    val coordinates: String,
-    var distance: String,
-    val status: Int,
+    var guid: String,
+    val name: String,
+    val rkCode: Int,
+    val latitude: Double,
+    val longitude: Double,
+    var distance: Double,
+    val actual: Int,
 )

@@ -44,13 +44,19 @@ class CartActivity : AppCompatActivity() {
             val login = db.get_last_user();
             if (login != null) {
                 val dataFromCart: List<Cart> = db.getCartInfo(userLogin?.login.toString())
+                val currentLocation = db.getLocationsData()
+
                 val ordersList = dataFromCart.map {
                     OrderFromApp(
                         ItemId = it.id,
                         Quantity = it.count,
-                        UserId = login.id
+                        UserId = login.id,
+                        LocationCode = currentLocation!!.rkCode
                     )
                 }
+
+                println(ordersList)
+
                 val gson = Gson()
                 val json = gson.toJson(ordersList)
                 var escapedJson = json.replace("\"", "\\\"")
@@ -64,7 +70,7 @@ class CartActivity : AppCompatActivity() {
                         db.deleteCartItemsByUserLogin(login.login)
                         val dialogFragment = Modal()
                         val args = Bundle()
-                        args.putBoolean("State", true) // Передача вашей переменной
+                        args.putBoolean("State", true)
                         dialogFragment.arguments = args
                         dialogFragment.show(supportFragmentManager, "MyDialogFragment")
                     },

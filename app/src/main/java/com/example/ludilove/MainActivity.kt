@@ -53,8 +53,6 @@ class MainActivity : AppCompatActivity() {
                     },
                     Response.ErrorListener { error ->
                         println("Error: ${error.networkResponse}")
-                        // Выведите содержимое ошибки для дальнейшей диагностики
-                        error.printStackTrace()
                     }) {
                     override fun getBodyContentType(): String {
                         return "application/json"

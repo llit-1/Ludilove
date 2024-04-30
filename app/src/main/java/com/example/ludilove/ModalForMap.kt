@@ -21,7 +21,7 @@ class ModalForMap(private val location: Location, context : Context) : DialogFra
 
         val redirectToMainPage : Button = dialogView.findViewById(R.id.redirectToMainPage)
         val address : TextView = dialogView.findViewById(R.id.address)
-        address.setText("${location.address}")
+        address.setText(location.name)
 
         redirectToMainPage.setOnClickListener {
             val db = context?.let { it1 -> DbHelper(it1, null) }

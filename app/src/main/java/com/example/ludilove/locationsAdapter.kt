@@ -45,8 +45,8 @@ class LocationsAdapter(private val locations: List<Location>) :
         @SuppressLint("SimpleDateFormat", "ResourceAsColor")
         @RequiresApi(Build.VERSION_CODES.O)
         fun bind(location: Location) {
-            locationName.text = location.address;
-            locationId.text = location.locationId.toString();
+            locationName.text = location.name;
+            locationId.text = location.guid
             locationId.visibility = View.INVISIBLE;
             locationDistance.text = "${location.distance} Км."
 
@@ -62,7 +62,7 @@ class LocationsAdapter(private val locations: List<Location>) :
             val db = DbHelper(itemView.context, null)
             val currentLocation = db.getLocationsData()
 
-            if(location.locationId == currentLocation?.locationId) {
+            if(location.guid == currentLocation?.guid) {
                 buttonPick.text = "Выбрано"
                 buttonPick.setBackgroundColor(Color.parseColor("#43646863"))
                 buttonPick.isEnabled = false

@@ -78,7 +78,7 @@ class ItemsActivity : AppCompatActivity() {
         // Создаем массив для заполнения категорий
         val locations : TextView = findViewById(R.id.helper_for_logo)
         val db = DbHelper(this, null)
-        locations.text = db.getLocationsData()?.address
+        locations.text = db.getLocationsData()?.name
         locations.paintFlags = locations.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
 
@@ -130,7 +130,7 @@ class ItemsActivity : AppCompatActivity() {
         val exit : ImageView = findViewById(R.id.backArrow_item_exit)
         exit.setOnClickListener {
             @Suppress("NAME_SHADOWING") val userLogin = db.get_last_user()
-            showConfirmationDialog(userLogin?.login, userLogin!!.id)
+            ModalForLogout().show(supportFragmentManager, "Exit?")
         }
 
         val link_to_auth : ImageButton = findViewById(R.id.link_to_auth)
